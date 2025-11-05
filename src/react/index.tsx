@@ -1,14 +1,13 @@
 import { useRef, useState, useEffect } from "react";
 import type { UnicornSceneProps } from "../shared/types";
 import { useUnicornStudioScript, useUnicornScene } from "./hooks";
-import { UNICORN_STUDIO_CDN_URL, DEFAULT_VALUES } from "../shared/constants";
+import { DEFAULT_VALUES } from "../shared/constants";
 import { unicornStyles } from "../shared/styles";
 import { isWebGLSupported } from "../shared/utils";
 
 function UnicornScene({
   projectId,
   jsonFilePath,
-  sdkUrl = UNICORN_STUDIO_CDN_URL,
   width = DEFAULT_VALUES.width,
   height = DEFAULT_VALUES.height,
   scale = DEFAULT_VALUES.scale,
