@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import type {
   UnicornStudioScene,
   UnicornSceneConfig,
+  UnicornSceneData,
   ValidFPS,
   ScaleRange,
 } from "./types";
@@ -12,6 +13,7 @@ export interface UseUnicornSceneParams {
   elementRef: React.RefObject<HTMLDivElement | null>;
   projectId?: string;
   jsonFilePath?: string;
+  rawJson?: UnicornSceneData;
   production?: boolean;
   scale: ScaleRange;
   dpi: number;
@@ -28,6 +30,7 @@ export function useUnicornScene({
   elementRef,
   projectId,
   jsonFilePath,
+  rawJson,
   production,
   scale,
   dpi,
@@ -84,7 +87,7 @@ export function useUnicornScene({
     }
 
     // Create a unique key for this configuration
-    const currentKey = `${projectId || ""}-${jsonFilePath || ""}-${scale}-${dpi}-${fps}-${production ? "prod" : "dev"}`;
+    const currentKey = `${projectId || ""}-${jsonFilePath || ""}-${rawJson ? "rawJson" : ""}-${scale}-${dpi}-${fps}-${production ? "prod" : "dev"}`;
 
     // Check if we're already initialized with this exact configuration
     if (initializationKeyRef.current === currentKey && sceneRef.current) {
@@ -105,10 +108,10 @@ export function useUnicornScene({
       }
 
       // Prepare scene configuration
+      const elementId = elementRef.current.id || `unicorn-${Math.random().toString(36).slice(2, 11)}`;
+      
       const sceneConfig: UnicornSceneConfig = {
-        elementId:
-          elementRef.current.id ||
-          `unicorn-${Math.random().toString(36).slice(2, 11)}`,
+        elementId,
         scale,
         dpi,
         fps,
@@ -120,16 +123,18 @@ export function useUnicornScene({
 
       // Set the ID if it doesn't exist
       if (!elementRef.current.id) {
-        elementRef.current.id = sceneConfig.elementId;
+        elementRef.current.id = elementId;
       }
 
       // Add project source
-      if (jsonFilePath) {
+      if (rawJson) {
+        sceneConfig.rawJson = rawJson;
+      } else if (jsonFilePath) {
         sceneConfig.filePath = jsonFilePath;
       } else if (projectId) {
         sceneConfig.projectId = projectId;
       } else {
-        throw new Error("No project ID or JSON file path provided");
+        throw new Error("No project ID, JSON file path, or raw JSON data provided");
       }
 
       // Initialize the scene using the dynamic method with a timeout
@@ -199,6 +204,7 @@ export function useUnicornScene({
     isScriptLoaded,
     jsonFilePath,
     projectId,
+    rawJson,
     production,
     scale,
     dpi,

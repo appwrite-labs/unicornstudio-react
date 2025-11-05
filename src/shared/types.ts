@@ -2,10 +2,19 @@ export type ValidFPS = 15 | 24 | 30 | 60 | 120;
 
 export type ScaleRange = number;
 
+// Raw JSON data structure for Unicorn Studio scenes
+export interface UnicornSceneData {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  history: any[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  options: Record<string, any>;
+}
+
 // UnicornScene component types
 export interface UnicornSceneProps {
   projectId?: string;
   jsonFilePath?: string;
+  rawJson?: UnicornSceneData;
   altText?: string;
   width?: number | string;
   height?: number | string;
@@ -33,17 +42,21 @@ export interface UnicornStudioScene {
 }
 
 export interface UnicornSceneConfig {
-  elementId: string;
+  elementId?: string;
+  element?: HTMLElement;
   scale?: ScaleRange;
   dpi?: number;
   fps?: ValidFPS;
   projectId?: string;
   filePath?: string;
+  rawJson?: UnicornSceneData;
   lazyLoad?: boolean;
   fixed?: boolean;
   altText?: string;
   ariaLabel?: string;
   production?: boolean;
+  width?: number;
+  height?: number;
   interactivity?: {
     mouse?: {
       disableMobile?: boolean;

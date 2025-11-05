@@ -8,6 +8,7 @@ import { isWebGLSupported } from "../shared/utils";
 function UnicornScene({
   projectId,
   jsonFilePath,
+  rawJson,
   width = DEFAULT_VALUES.width,
   height = DEFAULT_VALUES.height,
   scale = DEFAULT_VALUES.scale,
@@ -38,6 +39,7 @@ function UnicornScene({
     elementRef,
     projectId,
     jsonFilePath,
+    rawJson,
     production,
     scale,
     dpi,

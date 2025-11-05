@@ -7470,10 +7470,15 @@ while loading this video:
     let e = n.projectId ? n.projectId.split("?")[0] : null,
       t = n.projectId ? n.projectId.split("?")[1] : null;
     return new Promise((s, i) => {
-      ts(e, t, n.filePath, i, n.production)
+      // NEW: If rawJson is provided, use it directly
+      const dataPromise = n.rawJson 
+        ? Promise.resolve(n.rawJson)
+        : ts(e, t, n.filePath, i, n.production);
+      
+      dataPromise
         .then((r) => {
           (!r || !r.history || !r.options) &&
-            i(new Error(`Error fetching data for project id '${n.projectId}'`));
+            i(new Error(`Error fetching data for project id '${n.projectId || 'rawJson'}'`));
           const a = r.options || {},
             h = Zt(n.element)
               ? n.element
@@ -7496,7 +7501,7 @@ while loading this video:
               fps: n.fps || a.fps || 60,
               dpi: d,
               name: a.name,
-              projectId: e || n.filePath.split(".")[0],
+              projectId: e || (n.filePath && n.filePath.split(".")[0]) || "custom-scene",
               renderingScale: l,
               element: h,
               lazyLoad: n.lazyLoad,
