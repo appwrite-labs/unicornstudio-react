@@ -360,7 +360,7 @@
         (this.onDisposed = v),
         (this.onSceneChange = T),
         this.initState(),
-        (this.canvas = imagineDocument.createElement("canvas")));
+        (this.canvas = document.createElement("canvas")));
       const w = {
         alpha: this.alpha,
         premultipliedAlpha: this.premultipliedAlpha,
