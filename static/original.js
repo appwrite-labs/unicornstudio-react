@@ -9,19 +9,14 @@
   "use strict";
 
   let document = window.document;
-  const imagineDocument = document.querySelector('imagine-web-components-wrapper')?.shadowRoot;
+  let imagineDocument = document.querySelector('imagine-web-components-wrapper')?.shadowRoot;
 
-  if (imagineDocument) {
-    console.log('Imagine document found');
-    document = imagineDocument;
+  if (!imagineDocument) {
+    // Local dev
+    imagineDocument = document;
+    console.log("No imagine document found, using window.document");
   } else {
-    console.log('Imagine document not found');
-  }
-
-  if (imagineDocument) {
-    // eslint-disable-next-line no-global-assign
-    document = imagineDocument;
-    console.log('Imagine document found');
+    console.log("Found imagine document");
   }
   
   var as = Object.defineProperty;
@@ -855,7 +850,7 @@
         if (typeof e == "string")
           if (((e = imagineDocument.getElementById(e)), e)) this.container = e;
           else {
-            let t = imagineDocument.createElement("div");
+            let t = document.createElement("div");
             (t.setAttribute("id", "curtains-canvas"),
               imagineDocument.body.appendChild(t),
               (this.container = t),
@@ -866,7 +861,7 @@
           }
         else e instanceof Element && (this.container = e);
       else {
-        let t = imagineDocument.createElement("div");
+        let t = document.createElement("div");
         (t.setAttribute("id", "curtains-canvas"),
           imagineDocument.body.appendChild(t),
           (this.container = t),
@@ -2480,8 +2475,8 @@ void main() {
           ? this._parent.loader &&
             this._parent.loader._addSourceToParent(this.source, this.sourceType)
           : (this._size = {
-              width: this._parent._boundingRect.imagineDocument.width,
-              height: this._parent._boundingRect.imagineDocument.height,
+              width: this._parent._boundingRect.document.width,
+              height: this._parent._boundingRect.document.height,
             }),
           this._setSize());
       } else
@@ -2864,18 +2859,18 @@ gl.LINEAR filtering will be used instead`
     _getSizes() {
       if (this.sourceType === "fbo")
         return {
-          parentWidth: this._parent._boundingRect.imagineDocument.width,
-          parentHeight: this._parent._boundingRect.imagineDocument.height,
-          sourceWidth: this._parent._boundingRect.imagineDocument.width,
-          sourceHeight: this._parent._boundingRect.imagineDocument.height,
+          parentWidth: this._parent._boundingRect.document.width,
+          parentHeight: this._parent._boundingRect.document.height,
+          sourceWidth: this._parent._boundingRect.document.width,
+          sourceHeight: this._parent._boundingRect.document.height,
           xOffset: 0,
           yOffset: 0,
         };
       const e = this._parent.scale
           ? Ae.set(this._parent.scale.x, this._parent.scale.y)
           : Ae.set(1, 1),
-        t = this._parent._boundingRect.imagineDocument.width * e.x,
-        s = this._parent._boundingRect.imagineDocument.height * e.y,
+        t = this._parent._boundingRect.document.width * e.x,
+        s = this._parent._boundingRect.document.height * e.y,
         i = this._size.width,
         r = this._size.height,
         a = i / r,
@@ -2933,10 +2928,10 @@ gl.LINEAR filtering will be used instead`
         ? ((this._size = {
             width:
               (this._parent._size && this._parent._size.width) ||
-              this._parent._boundingRect.imagineDocument.width,
+              this._parent._boundingRect.document.width,
             height:
               (this._parent._size && this._parent._size.height) ||
-              this._parent._boundingRect.imagineDocument.height,
+              this._parent._boundingRect.document.height,
           }),
           this._copiedFrom ||
             (this.gl.bindTexture(this.gl.TEXTURE_2D, this._sampler.texture),
@@ -3135,7 +3130,7 @@ gl.LINEAR filtering will be used instead`
     }
     _createVideo(e) {
       if (typeof e == "string" || e.getAttribute("crossOrigin") === null) {
-        const t = imagineDocument.createElement("video");
+        const t = document.createElement("video");
         return (
           (t.crossOrigin = this.crossOrigin),
           typeof e == "string"
@@ -3707,14 +3702,14 @@ while loading this video:
     }
     getBoundingRect() {
       return {
-        width: this._boundingRect.imagineDocument.width,
-        height: this._boundingRect.imagineDocument.height,
-        top: this._boundingRect.imagineDocument.top,
-        left: this._boundingRect.imagineDocument.left,
+        width: this._boundingRect.document.width,
+        height: this._boundingRect.document.height,
+        top: this._boundingRect.document.top,
+        left: this._boundingRect.document.left,
         right:
-          this._boundingRect.imagineDocument.left + this._boundingRect.imagineDocument.width,
+          this._boundingRect.document.left + this._boundingRect.document.width,
         bottom:
-          this._boundingRect.imagineDocument.top + this._boundingRect.imagineDocument.height,
+          this._boundingRect.document.top + this._boundingRect.document.height,
       };
     }
     resize() {
@@ -3735,24 +3730,24 @@ while loading this video:
     mouseToPlaneCoords(e) {
       const t = this.scale ? this.scale : xt.set(1, 1),
         s = Ne.set(
-          (this._boundingRect.imagineDocument.width -
-            this._boundingRect.imagineDocument.width * t.x) /
+          (this._boundingRect.document.width -
+            this._boundingRect.document.width * t.x) /
             2,
-          (this._boundingRect.imagineDocument.height -
-            this._boundingRect.imagineDocument.height * t.y) /
+          (this._boundingRect.document.height -
+            this._boundingRect.document.height * t.y) /
             2
         ),
         i = {
           width:
-            (this._boundingRect.imagineDocument.width * t.x) /
+            (this._boundingRect.document.width * t.x) /
             this.renderer.pixelRatio,
           height:
-            (this._boundingRect.imagineDocument.height * t.y) /
+            (this._boundingRect.document.height * t.y) /
             this.renderer.pixelRatio,
           top:
-            (this._boundingRect.imagineDocument.top + s.y) / this.renderer.pixelRatio,
+            (this._boundingRect.document.top + s.y) / this.renderer.pixelRatio,
           left:
-            (this._boundingRect.imagineDocument.left + s.x) / this.renderer.pixelRatio,
+            (this._boundingRect.document.left + s.x) / this.renderer.pixelRatio,
         };
       return Ne.set(
         ((e.x - i.left) / i.width) * 2 - 1,
@@ -4223,12 +4218,12 @@ while loading this video:
       const e = this.camera.getScreenRatiosFromFov();
       ((this._boundingRect.world = {
         width:
-          ((this._boundingRect.imagineDocument.width /
+          ((this._boundingRect.document.width /
             this.renderer._boundingRect.width) *
             e.width) /
           2,
         height:
-          ((this._boundingRect.imagineDocument.height /
+          ((this._boundingRect.document.height /
             this.renderer._boundingRect.height) *
             e.height) /
           2,
@@ -4239,11 +4234,11 @@ while loading this video:
     _setWorldPosition() {
       const e = {
           x:
-            this._boundingRect.imagineDocument.width / 2 +
-            this._boundingRect.imagineDocument.left,
+            this._boundingRect.document.width / 2 +
+            this._boundingRect.document.left,
           y:
-            this._boundingRect.imagineDocument.height / 2 +
-            this._boundingRect.imagineDocument.top,
+            this._boundingRect.document.height / 2 +
+            this._boundingRect.document.top,
         },
         t = {
           x:
@@ -4344,8 +4339,8 @@ while loading this video:
     }
     updateScrollPosition(e, t) {
       (e || t) &&
-        ((this._boundingRect.imagineDocument.top += t * this.renderer.pixelRatio),
-        (this._boundingRect.imagineDocument.left += e * this.renderer.pixelRatio),
+        ((this._boundingRect.document.top += t * this.renderer.pixelRatio),
+        (this._boundingRect.document.left += e * this.renderer.pixelRatio),
         this._applyWorldPositions());
     }
     _getIntersection(e, t) {
@@ -4537,15 +4532,15 @@ while loading this video:
         this._computeWebGLBoundingRect(),
         {
           top:
-            this._boundingRect.worldToimagineDocument.top - this.drawCheckMargins.top,
+            this._boundingRect.worldToDocument.top - this.drawCheckMargins.top,
           right:
-            this._boundingRect.worldToimagineDocument.right +
+            this._boundingRect.worldToDocument.right +
             this.drawCheckMargins.right,
           bottom:
-            this._boundingRect.worldToimagineDocument.bottom +
+            this._boundingRect.worldToDocument.bottom +
             this.drawCheckMargins.bottom,
           left:
-            this._boundingRect.worldToimagineDocument.left -
+            this._boundingRect.worldToDocument.left -
             this.drawCheckMargins.left,
         }
       );
@@ -4944,8 +4939,8 @@ while loading this video:
   let we,
     fe,
     Fe = !1,
-    ne = window.innerHeight || imagineDocument.documentElement.clientHeight,
-    K = window.innerWidth || imagineDocument.documentElement.clientWidth,
+    ne = window.innerHeight || document.documentElement.clientHeight,
+    K = window.innerWidth || document.documentElement.clientWidth,
     j = window.scrollY || window.pageYOffset,
     Ie = 0,
     oe = 0,
@@ -4954,11 +4949,11 @@ while loading this video:
     ee = null,
     de;
   const ge = 0.001;
-  typeof imagineDocument.hidden < "u"
+  typeof document.hidden < "u"
     ? ((we = "hidden"), (fe = "visibilitychange"))
-    : typeof imagineDocument.msHidden < "u"
+    : typeof document.msHidden < "u"
       ? ((we = "msHidden"), (fe = "msvisibilitychange"))
-      : typeof imagineDocument.webkitHidden < "u" &&
+      : typeof document.webkitHidden < "u" &&
         ((we = "webkitHidden"), (fe = "webkitvisibilitychange"));
   function Lt(n, e) {
     let t;
@@ -5150,12 +5145,12 @@ while loading this video:
     );
   }
   function Ot(n, e) {
-    const t = imagineDocument.createElement("a");
+    const t = document.createElement("a");
     ((t.href = "https://unicorn.studio?utm_source=public-url"),
       (t.style =
         "position: absolute; display: flex; bottom: 30px; left: 0; width: 190px; margin: 0 auto; right: 0rem; padding: 10px; border-radius: 6px; background-color: rgba(255, 255, 255, 1); box-shadow: 0 3px 9px 0 rgba(0, 0, 0, .2); z-index: 99999999; box-sizing: border-box;"),
       (t.target = "_blank"));
-    const s = imagineDocument.createElement("img");
+    const s = document.createElement("img");
     ((s.src = me(
       "aHR0cHM6Ly9hc3NldHMudW5pY29ybi5zdHVkaW8vbWVkaWEvbWFkZV9pbl91c19zbWFsbF93ZWIuc3Zn"
     )),
@@ -5176,7 +5171,7 @@ while loading this video:
       l = ue(n.anchorPoint);
     ((o -= l.x * t), (h -= l.y * s), (h += e.offsetTop), (o += e.offsetLeft));
     const d = imagineDocument.querySelector(`[data-us-text="${n.local.id}"]`),
-      c = d || imagineDocument.createElement("div");
+      c = d || document.createElement("div");
     (c.setAttribute("data-us-text", n.local.id),
       (c.style.cssText = `width:${t}px;top:${h}px;left:${o}px;font-size:${i}px;line-height:${r}px;letter-spacing:${a}px;font-family:${n.fontFamily};font-weight:${n.fontWeight};text-align:${n.textAlign};position:absolute;word-break:break-word;transform:rotateZ(${Math.round(n.rotation * 360)}deg);color:transparent;z-index:2;`),
       (c.innerText = n.textContent),
@@ -5194,7 +5189,7 @@ while loading this video:
     return i || e[0];
   }
   function Ye() {
-    S.filter((e) => !imagineDocument.body.contains(e.element)).forEach((e) => {
+    S.filter((e) => !document.body.contains(e.element)).forEach((e) => {
       e.curtain && e.curtain.dispose();
       const t = S.indexOf(e);
       t !== -1 && S.splice(t, 1);
@@ -5275,7 +5270,7 @@ while loading this video:
       n.loadCanvas(ee, { sampler: "uTexture" });
       return;
     }
-    ((ee = imagineDocument.createElement("canvas")),
+    ((ee = document.createElement("canvas")),
       (ee.width = e * 0.01),
       (ee.height = t * 0.01));
     const s = ee.getContext("2d");
@@ -5761,7 +5756,7 @@ while loading this video:
     }
     createLocalCanvas() {
       const t = this.state(),
-        s = imagineDocument.createElement("canvas"),
+        s = document.createElement("canvas"),
         i = this.getPixelRatio();
       ((s.width = t.canvasWidth * i), (s.height = t.canvasHeight * i));
       const r = s.getContext("2d");
@@ -6129,7 +6124,7 @@ while loading this video:
           l === "normal" || l === "400" || l === 400 ? "normal" : l.toString(),
         i = isNaN(parseInt(this.fontWeight)) ? "normal" : s(this.fontWeight);
       if (
-        Array.from(imagineDocument.fonts).some(
+        Array.from(document.fonts).some(
           (l) =>
             l.family === this.fontFamily &&
             l.style === t &&
@@ -6146,7 +6141,7 @@ while loading this video:
         style: t,
         weight: i,
       });
-      (imagineDocument.fonts.add(h),
+      (document.fonts.add(h),
         h
           .load()
           .then(() => {
@@ -6337,8 +6332,8 @@ while loading this video:
         }));
   }
   function $t() {
-    ((ne = window.innerHeight || imagineDocument.documentElement.clientHeight),
-      (K = window.innerWidth || imagineDocument.documentElement.clientWidth),
+    ((ne = window.innerHeight || document.documentElement.clientHeight),
+      (K = window.innerWidth || document.documentElement.clientWidth),
       S.filter((n) => n.initialized).forEach((n) => {
         n.refresh();
       }),
@@ -7468,7 +7463,7 @@ while loading this video:
   }
   function ss() {
     try {
-      return !!imagineDocument.createElement("canvas").getContext("webgl2");
+      return !!document.createElement("canvas").getContext("webgl2");
     } catch {
       return !1;
     }
