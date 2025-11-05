@@ -33,7 +33,7 @@ function UnicornScene({
   const {
     isLoaded,
     error: scriptError,
-  } = useUnicornStudioScript(sdkUrl);
+  } = useUnicornStudioScript();
   
   const { error: sceneError } = useUnicornScene({
     elementRef,
