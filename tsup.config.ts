@@ -4,8 +4,6 @@ export default defineConfig({
   entry: {
     // Default React version (Vite-compatible)
     index: "src/index.tsx",
-    // Next.js version
-    next: "src/next/index.tsx",
   },
   format: ["cjs", "esm"],
   dts: true,

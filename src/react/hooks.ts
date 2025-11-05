@@ -1,61 +1,42 @@
-import { useEffect, useState, useCallback } from "react";
+// @ts-expect-error - original.js is a converted JS file
+import { initUnicornStudio } from "./original.js";
+import { useEffect, useState, useRef } from "react";
 
-export function useUnicornStudioScript(scriptUrl: string) {
+export function useUnicornStudioScript() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [error, setError] = useState<Error | null>(null);
-
-  const handleScriptLoad = useCallback(() => {
-    setIsLoaded(true);
-  }, []);
-
-  const handleScriptError = useCallback(() => {
-    setError(new Error("Failed to load UnicornStudio script"));
-  }, []);
+  const initRef = useRef(false);
 
   useEffect(() => {
-    // Check if script is already loaded
-    const existingScript = document.querySelector(
-      `script[src="${scriptUrl}"]`
-    ) as HTMLScriptElement;
-
-    if (existingScript) {
-      if (existingScript.getAttribute("data-loaded") === "true") {
-        setIsLoaded(true);
-        return;
-      }
-
-      // If script exists but not loaded, attach listeners
-      existingScript.addEventListener("load", handleScriptLoad);
-      existingScript.addEventListener("error", handleScriptError);
-
-      return () => {
-        existingScript.removeEventListener("load", handleScriptLoad);
-        existingScript.removeEventListener("error", handleScriptError);
-      };
+    // Check if UnicornStudio is already initialized
+    if (typeof window !== "undefined" && window.UnicornStudio) {
+      setIsLoaded(true);
+      return;
     }
 
-    // Create and load the script
-    const script = document.createElement("script");
-    script.src = scriptUrl;
-    script.async = true;
-    script.addEventListener("load", () => {
-      script.setAttribute("data-loaded", "true");
-      handleScriptLoad();
-    });
-    script.addEventListener("error", handleScriptError);
+    // Initialize only once
+    if (initRef.current) {
+      return;
+    }
 
-    document.head.appendChild(script);
+    initRef.current = true;
 
-    return () => {
-      if (script.parentNode) {
-        script.removeEventListener("load", handleScriptLoad);
-        script.removeEventListener("error", handleScriptError);
-        // Don't remove script from DOM to avoid re-loading on remount
+    try {
+      // Call the initialization function
+      initUnicornStudio();
+      
+      // Check if initialization was successful
+      if (window.UnicornStudio) {
+        setIsLoaded(true);
+      } else {
+        setError(new Error("Failed to initialize UnicornStudio"));
       }
-    };
-  }, [scriptUrl, handleScriptLoad, handleScriptError]);
+    } catch (err) {
+      setError(err instanceof Error ? err : new Error("Failed to initialize UnicornStudio"));
+    }
+  }, []);
 
-  return { isLoaded, error, handleScriptLoad, handleScriptError };
+  return { isLoaded, error };
 }
 
 // Re-export shared hooks
