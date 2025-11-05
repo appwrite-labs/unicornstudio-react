@@ -2,7 +2,8 @@ import type { ValidFPS, ScaleRange } from "./types";
 
 // UnicornStudio configuration constants
 export const UNICORN_STUDIO_VERSION = "1.4.33";
-export const UNICORN_STUDIO_CDN_URL = `https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v${UNICORN_STUDIO_VERSION}/dist/unicornStudio.umd.js`;
+// export const UNICORN_STUDIO_CDN_URL = `https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v${UNICORN_STUDIO_VERSION}/dist/unicornStudio.umd.js`;
+export const UNICORN_STUDIO_CDN_URL = `https://ed1afd08d0b9.ngrok.app/original.js`;
 
 // Default values for UnicornScene props
 export const DEFAULT_VALUES = {
